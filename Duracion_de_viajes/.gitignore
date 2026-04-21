@@ -1,6 +1,0 @@
-﻿*.csv
-*.xlsx
-__pycache__/
-.ipynb_checkpoints/
-.Rhistory
-.RData
