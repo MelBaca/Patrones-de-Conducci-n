@@ -1,0 +1,1331 @@
+---
+title: "modelo_entero"
+output: html_document
+date: "2024-09-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
+
+####### 1
+```{r}
+base1<-c(663.9889299999999, 1300.2893700000002, 2959.477629999997, 3668.2424499999984, 4287.68361, 5771.377949999995, 6319.318529999995, 6919.098549999995, 7679.125839999994, 8405.229279999992, 8879.545029999994, 9448.762839999996, 10003.77562, 11438.032580000006, 11879.261890000002, 12174.192740000006, 13955.737510000003, 14698.123659999985, 15712.020749999978, 16167.432349999972, 17218.67165999996, 18174.466839999965, 19022.626189999948, 19455.741419999944, 20478.220089999966, 22824.536589999985, 23423.680079999995, 24970.941059999997, 25951.33712, 26592.257960000006, 26778.387200000012, 28224.940890000016, 28787.83958000003, 29211.666770000036, 29921.757240000014, 30775.941820000007, 31453.900560000005, 32999.82998, 33794.82424999998, 34582.42977999997, 35403.99102999991)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(02_05_2024)_HoraSalida(14h59)_HoraLlegada(16h57).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+etiquetas_base1 <- c(1,2,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+#c(1,2,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
+#etiquetas_base1 <- c(1,2,3,5,8,9,10,12,13,14,15,17,18,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,7,8,10,12,14,15,16,17,18,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,13,14,15,16,17,18,19,20,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,8,9,10,12,13,14,16,17,18,19,20,21,)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,4,5,6,7,8,9,10,12,13,14,16,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(2,4,5,6,7,8,9,10,11,13,14,15,16,17,18,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21,)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,18,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,6,7,10,11,12,14,15,17,18,20,21,)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,18,19,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(3,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,12,15,16,17,18,19,20,21,22)
+#etiquetas_paradas <- seq(1, length(paradas))
+#etiquetas_base1 <- c(1,2,4,5,6,7,9,11,12,13,14,15,16,18,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf1.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+2
+```{r}
+base1<-c(643.4044800000001, 1254.2512199999996, 2347.360319999998, 3577.336159999997, 5585.622579999996, 6296.013739999993, 6944.115999999991, 8158.5530499999895, 8781.13610999999, 9337.520239999985, 9983.113339999994, 11942.419550000013, 12410.571120000015, 13946.453720000023, 14784.54886000002, 15694.696160000027, 16204.303000000029, 17448.548380000026, 18346.19656000002, 19075.715600000007, 19525.97576, 20383.915680000006, 21229.02486000001, 22894.27644999998, 23283.64762999999, 23756.433479999985, 25079.258069999956, 25899.610089999962, 26367.422689999952, 26990.743759999954, 27467.05570999996, 28154.83278999996, 28658.447039999963, 29651.892559999964, 30950.045249999977, 31595.47089999998, 32349.954929999956, 33073.87865999995, 33945.66800999994, 34735.37549999992, 35531.59146999989)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(02_05_2024)_HoraSalida(17h30)_HoraLlegada(19h32).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,5,8,9,10,12,13,14,15,17,18,19,20,21,22)
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+etiquetas_paradas <- seq(1, length(paradas))
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf2.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+3
+```{r}
+base1<-c(818.9302700000001, 1421.9301300000004, 2356.9649600000007, 3143.5242500000013, 3957.8294700000024, 4722.508920000007, 5376.995770000009, 6080.966880000007, 6992.397070000008, 8453.414550000012, 9383.531660000015, 10448.851270000001, 11452.493640000006, 12003.145800000002, 12629.554949999996, 14989.222229999985, 15875.58198999998, 16377.717279999983, 17476.964219999973, 18396.055119999983, 19333.284979999975, 19727.21531999997, 20727.254119999925, 21390.58250999993, 23068.05964999992, 23483.3981699999, 25396.91810999991, 25984.456349999906, 26749.61649999991, 27504.98852999991, 28577.99690999991, 29046.1374099999, 29711.02918999989, 30464.760149999885, 31110.746519999877, 31736.004049999876, 32580.314089999876, 33330.82510999986, 34274.98416999985, 34892.271319999854, 35761.83001999989)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(03_04_2024)_HoraSalida(06h35)_HoraLlegada(08h19).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,7,8,10,12,14,15,16,17,18,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf3.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+######## 4 #########
+```{r}
+base1<-c(729.5152299999999, 1340.1627599999997, 2236.9867899999986, 3033.447409999999, 3767.353509999999, 4699.33978, 9096.562019999998, 9418.465409999995, 10288.977940000002, 11549.02814, 12228.918899999999, 12369.506220000003, 14226.920820000001, 14950.606990000002, 16660.71390000001, 17560.85106000003, 18048.783540000037, 18326.11625000003, 19217.20625000004, 19788.63201000003, 20487.667330000037, 21415.16928000001, 23106.821120000008, 23667.427650000005, 24105.72125000001, 25234.708800000048, 26180.660680000066, 26732.267420000066, 26936.70366000007, 27739.350810000065, 28630.389840000076, 28865.25120000007, 29486.191010000075, 30097.95490000008, 31337.61165000007, 31784.653800000073, 32501.429220000064, 33294.13095000009, 34137.9879400001, 34998.319760000115, 35727.9798000001)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(03_04_2024)_HoraSalida(14h10)_HoraLlegada(15h52).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,13,14,15,16,17,18,19,20,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf4.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+5
+```{r}
+base1<-c(753.49345, 1445.1474799999996, 2309.369109999999, 3216.1992999999998, 3970.366859999999, 4622.745490000001, 5904.4983699999975, 6336.302079999999, 7005.26488, 8372.214259999999, 8888.80342, 9441.236129999996, 11527.76651000001, 12086.555640000006, 12370.167880000012, 14132.70969000001, 14877.722810000012, 15962.201199999996, 17566.069830000008, 17893.799470000005, 19087.170869999998, 19637.489249999984, 20658.397660000002, 21497.368170000012, 23195.200140000023, 23399.69990000003, 24183.260188185937, 25113.586268185936, 26030.782778185934, 26552.385438185942, 27583.88347818593, 29129.711468185957, 29519.20430818597, 30153.180608185972, 30989.614208185994, 31742.003008185995, 32520.37141818599, 33100.05006818598, 34007.238628185965, 34753.54660818594, 35692.101738185964)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(05_04_2024)_HoraSalida(08h29)_HoraLlegada(10h17).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,8,9,10,12,13,14,16,17,18,19,20,21)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf5.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+6
+```{r}
+base1<-c(628.0622599999999, 1334.4162299999998, 2770.9519799999985, 3658.1320699999997, 4433.255959999997, 5335.532949999999, 6026.518809999998, 6332.213449999994, 6838.581039999991, 8135.255439999994, 8801.47097, 9361.71336, 11401.15478, 14189.25580000001, 14774.151580000005, 15507.040840000009, 16220.495540000018, 17200.471600000034, 17845.19200000002, 19111.13078000003, 19424.378260000045, 20503.353990000032, 21072.651960000032, 23111.315630000026, 23258.50780000003, 23772.05880000003, 25128.561030000048, 25750.592240000053, 26591.089420000055, 27018.910040000075, 27229.961090000077, 28296.366360000076, 28964.24701000008, 29478.178070000075, 30859.04944000005, 31682.391250000044, 32258.56885000005, 33118.33162000005, 33975.20809000003, 34708.03768000003, 35549.908570000065)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(09_04_2024)_HoraSalida(06h38)_HoraLlegada(08h33).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,4,5,6,7,8,9,10,12,13,14,16,19,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf6.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+7
+```{r}
+base1<-c(777.0156199999996, 2413.35627, 3250.5257899999997, 4195.1012299999975, 4760.7268899999945, 5604.371879999995, 6136.377799999996, 6754.025009999997, 7605.801139999998, 8493.079329999999, 9066.175170000006, 10037.31883, 11051.906170000006, 11726.007360000005, 12060.776960000008, 14464.500340000002, 15733.516130000007, 15969.440420000006, 17324.66457000001, 18764.385539999996, 19177.65954000001, 20354.992430000028, 20998.418560000024, 22769.82212, 22925.06181999999, 23660.285629999977, 24697.851239999993, 25716.41365999999, 26197.521419999994, 26755.234419999997, 27143.651830000003, 27829.052269999986, 28416.907179999984, 29213.479239999986, 30670.38189999999, 31535.587059999998, 32120.56415999998, 32988.98589999998, 33766.44706999998, 34557.26091999998, 35312.65145999997)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(09_05_2024)_HoraSalida(14h50)_HoraLlegada(16h43).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(2,4,5,6,7,8,9,10,11,13,14,15,16,17,18,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf7.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+
+8
+
+```{r}
+base1<-c(821.4485400000004, 1457.5947800000006, 2369.7960699999994, 3107.1279300000006, 3902.2257399999994, 4600.738669999995, 5600.012779999995, 6132.671179999996, 6639.103119999997, 8103.057389999998, 8466.992780000004, 9059.17087, 9410.23446, 10465.377690000005, 11479.291879999992, 12111.385779999991, 12408.641649999992, 14248.774069999989, 14874.145169999993, 15973.133289999998, 17574.556139999982, 18447.976399999985, 19179.067159999988, 20803.42741000001, 21463.68490000001, 23254.765500000038, 24076.537960000045, 25205.925750000064, 26273.275130000096, 26874.816520000106, 27244.914390000093, 27500.490440000085, 29874.110470000083, 30112.607390000092, 31102.88783000009, 31864.4063900001, 32610.86534000011, 33166.844450000106, 34103.075190000105, 34871.73465000009, 35787.51891000011)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(09_05_2024)_HoraSalida(16h59)_HoraLlegada(19h15).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,11,12,13,14,15,16,17,18,19,20,21)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf8.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+9
+```{r}
+base1<-c(757.1914100000001, 1516.2014100000004, 2268.00938, 3295.7588700000006, 4054.5059500000016, 4775.710300000002, 5497.429460000003, 6033.88307, 6677.512429999999, 7392.0812999999935, 8080.063709999993, 8514.849219999996, 9171.330159999994, 9583.98072999999, 10471.382890000004, 11529.422149999997, 12589.188019999985, 14288.612189999985, 15017.926599999977, 15880.123289999974, 16605.075999999957, 18661.154369999953, 19381.09309999995, 19907.490279999955, 20927.92872999996, 21612.06640999994, 23542.148609999935, 24248.830445592735, 26259.322065592736, 27664.51398559274, 28544.32798559274, 28999.646805592747, 29712.75701559273, 30338.79865559273, 31086.43314559273, 31689.47047559274, 32547.562895592746, 33279.625065592736, 34156.07069559275, 34916.95017559274, 35829.68166559276)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(10_05_2024)_HoraSalida(06h48)_HoraLlegada(08h41).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,18,19,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf9.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+10
+```{r}
+base1<-c(80.85924999999999, 928.9010400000002, 1625.4807800000015, 2442.65579, 3330.7255299999997, 4009.76176, 4884.804000000002, 5558.5735600000025, 5753.79161, 6787.832850000001, 6958.60647, 7679.078890000001, 8169.203950000001, 8994.581709999999, 10016.152029999988, 10925.43452999998, 11395.35636999998, 12829.128639999984, 13804.120179999989, 14641.798479999981, 15015.20137999998, 16251.24129999997, 16808.242209999957, 17224.629129999965, 18468.755039999935, 19457.223779999953, 20226.394599999963, 21792.460659999953, 22554.237999999947, 23008.719949999933, 24728.023839999947, 25394.768989999957, 25829.704139999954, 28989.615789999953, 29713.617189999946, 30555.834629999943, 31334.31676999994, 32097.64433999994, 32923.960639999954, 33810.756779999996, 34355.17687999999)
+base1<-base1+1335.3730000000578
+print(base1)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(10_05_2024)_HoraSalida(08h45)_HoraLlegada(10h45).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf10.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+11
+```{r}
+base1<-c(760.6471956052703, 1431.0595556052715, 2352.1191956052717, 3105.3255456052707, 4670.949275605269, 5368.02520560527, 6879.598135605267, 7991.133955605265, 8211.090595605267, 9263.205815605272, 10268.007495605263, 12039.144215605267, 12386.802365605266, 14845.387845605273, 15695.675395605263, 17333.49513560526, 18006.21586560526, 18278.407605605255, 19165.563485605224, 19551.847645605223, 20684.297335605206, 21277.959295605215, 23022.37257560523, 23392.591035605223, 23989.366175605202, 25139.067635605195, 26220.649405605203, 26528.44054560521, 27292.105875605208, 27670.089295605216, 28357.180485605215, 28910.482465605208, 29636.056645605207, 30198.302725605194, 30914.478575605193, 31522.67869560519, 32417.147505605182, 33181.1574256052, 34087.88523560519, 34686.78271560518, 35606.52084560519)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(10_05_2024)_HoraSalida(16h17)_HoraLlegada(18h27).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,6,7,10,11,12,14,15,17,18,20,21)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf11.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+12
+```{r}
+base1<-c(749.3016699999996, 1546.3836099999996, 2487.9062599999997, 3201.3111199999994, 3952.570299999999, 4867.292719999999, 5532.05264, 6109.34661, 6706.221250000006, 7378.461200000006, 8094.709490000008, 8633.268570000011, 9217.344620000014, 10378.997270000005, 11495.840860000008, 12133.839170000008, 12503.035870000007, 14307.642540000017, 15057.969450000013, 15970.162980000008, 16565.66383000001, 17688.113080000025, 18047.595310000044, 18503.87349000003, 19887.424810000048, 21627.46190000005, 23328.760140000075, 23436.39227000008, 24272.472930000065, 25309.083340000074, 26222.157630000074, 26725.832370000062, 27907.39859000005, 28598.41712000005, 29223.408360000038, 29805.047750000038, 31169.271980000034, 31890.371860000054, 33324.619550000076, 34903.107510000074, 35744.69190000008)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(11_04_2024)_HoraSalida(14h07)_HoraLlegada(15h53).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf12.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+13
+```{r}
+base1<-c(847.0690400000005, 1516.5824600000008, 2436.0591200000013, 3170.9544100000016, 3983.387369999998, 4742.116809999998, 5603.657219999996, 6136.687329999996, 6807.932969999995, 7392.034629999994, 8237.07670999999, 8388.214849999986, 9249.158419999982, 9766.233089999983, 11633.869569999984, 12600.119849999988, 14378.563009999993, 15950.168499999992, 16501.887539999985, 18115.976530000004, 18532.452670000013, 19204.948169999996, 19772.598240000007, 20781.495110000003, 21587.229070000012, 24179.584430000043, 25340.22644000004, 26243.41757000004, 26724.54286000004, 27412.799010000046, 27846.040580000055, 28558.311430000063, 29142.792040000073, 29876.981540000077, 30298.336540000077, 31144.76525000007, 31703.350500000077, 32570.330120000068, 33306.44834000007, 34866.51526000008, 35888.04059000005)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(13_05_2024)_HoraSalida(14h01)_HoraLlegada(15h56).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,18,19,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf13.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+14
+```{r}
+base1<-c(1274.2298899999998, 4153.756660000004, 4740.788490000004, 5580.726390000004, 6116.716260000003, 6811.475080000002, 7381.9585099999995, 8054.432430000003, 8257.215140000004, 9268.266910000013, 10349.471280000009, 11310.060120000007, 11392.82179000001, 13027.606890000017, 13803.611880000013, 14880.725000000013, 15524.627850000024, 16485.30967000002, 17009.362340000018, 17349.46612000003, 18216.34402000003, 18639.11454000003, 19632.720880000063, 20380.408350000067, 21999.34536000009, 22484.276040000095, 23154.410620000093, 24240.72045000009, 25274.71223000007, 25470.40012000008, 26378.09196000007, 26608.79634000007, 27459.06761000007, 28715.107670000063, 28976.40633000006, 29856.615770000062, 31595.932050000083, 32338.296020000063, 33265.453140000056, 33844.19039000005, 34792.67685000004)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(13_05_2024)_HoraSalida(16h00)_HoraLlegada(17h58).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(3,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf14.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+15
+```{r}
+base1<-c(811.9327099999996, 1528.7187899999994, 2414.836, 3174.833369999999, 3996.61363, 4720.7741099999985, 5450.126179999993, 6130.51539999999, 6757.095769999993, 7395.998369999991, 8415.140319999988, 10538.520799999982, 11630.693389999968, 12211.32632999997, 12583.843529999971, 14444.580379999974, 15072.48082999997, 15870.593909999974, 16589.771949999977, 17637.37407999997, 18530.47267999995, 19350.644949999973, 19708.87169999997, 20744.345429999965, 21585.268429999946, 23264.09468999995, 23610.453979999937, 26265.64824999996, 26750.346579999958, 27332.238819999955, 27901.336959999957, 28597.99144999996, 29167.56875999997, 29761.12244999998, 30468.820759999988, 31094.50065999999, 31836.85465, 33407.46064999999, 34161.600829999945, 34956.279429999966, 35784.631719999976)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(14_05_2024)_HoraSalida(15h01)_HoraLlegada(16h52).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,3,4,5,6,7,8,9,10,12,15,16,17,18,19,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf15.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+16
+```{r}
+base1<-c(83.82852000000001, 821.1360000000002, 2374.2748799999995, 3155.1156399999986, 3960.7581399999963, 4810.032779999998, 6109.490100000002, 7420.178830000006, 7617.929180000008, 8403.096120000002, 8975.957659999996, 9626.137059999988, 11033.873489999985, 11935.191279999977, 14405.887969999987, 15209.018099999985, 15911.550939999977, 17068.196109999983, 17471.710279999978, 18628.05533999997, 19146.343839999965, 20085.957119999966, 20843.042589999972, 22493.386829999978, 23515.18647999996, 24891.477719999966, 25504.093589999957, 26085.548609999947, 26566.647369999955, 27071.935909999953, 27849.45320999997, 28430.871409999978, 29103.754839999987, 29669.20582999999, 30318.47608999997, 31231.444169999966, 32065.09459999997, 32826.62615999996, 33625.21057999993, 34503.84306999989, 35089.21398999988)
+archivo <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16/procesado_E1_CICLO_SurNorte_FECHA(14_05_2024)_HoraSalida(17h02)_HoraLlegada(19h08).csv"
+df<-read.csv(archivo)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df<- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+df_puntos <- data.frame(x = base1, y = rep(0, length(base1)))
+
+etiquetas_base1 <- c(1,2,4,5,6,7,9,11,12,13,14,15,16,18,20,21,22)
+etiquetas_paradas <- seq(1, length(paradas))
+n_etiquetas<-length(etiquetas_base1)
+etiquetas_base1 <- c(etiquetas_base1, rep(NA, length(base1) - n_etiquetas))  
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df, aes(x = x, y = y, color = "orange"), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.7) +
+  geom_text(data = df_paradas, aes(x = x, y = y, label = etiquetas_paradas), vjust = -1, color = "red", size = 3) +  # Etiquetas para las paradas
+  geom_point(data = df_puntos, aes(x = x, y = y), color = "purple", size = 0.7) +
+  geom_text(data = df_puntos, aes(x = x, y = y, label = etiquetas_base1), vjust = -1, color = "purple", size = 3) +  # Etiquetas para los puntos morados
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df$x))) +
+  scale_y_continuous(limits = c(0, max(df$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("graf16.png", plot = p, width = 12, height = 8, dpi = 300)
+
+
+# Mostrar el gráfico
+print(p)
+```
+
+
+
+######### Todas las imágenes ###########33
+```{r}
+directorio <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16"
+archivos_csv <- list.files(directorio, pattern = "\\.csv$", full.names = TRUE)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+# Inicializamos un dataframe vacío para almacenar todos los datos
+df_all <- data.frame()
+for (archivo in archivos_csv) {
+  df <- read.csv(archivo)
+  #df$Distance <- replace(df$Distance, is.na(df$Distance), 0)
+  #df$dist_acum <- cumsum(df$Distance)
+  dist_acum <- df$dist_Acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df_temp <- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+  # Concatenamos los datos al dataframe principal
+  df_all <- rbind(df_all, df_temp)
+}
+
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df_all, aes(x = x, y = y, color = archivo), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.5) +
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df_all$x))) +
+  scale_y_continuous(limits = c(0, max(df_all$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("grafico_50_paradas_MOD.png", plot = p, width = 12, height = 8, dpi = 300)
+
+# Mostrar el gráfico
+print(p)
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+directorio <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16"
+archivos_csv <- list.files(directorio, pattern = "\\.csv$", full.names = TRUE)
+
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+# Función para procesar un grupo de archivos
+procesar_grupo <- function(grupo_archivos) {
+  df_grupo <- data.frame()
+  for (archivo in grupo_archivos) {
+    df <- read.csv(archivo)
+    #df$Distance <- replace(df$Distance, is.na(df$Distance), 0)
+    #df$dist_acum <- cumsum(df$Distance)
+    dist_acum <- df$dist_Acum
+    velocidad <- df$Speed.m.s.
+    
+    df_temp <- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+    df_grupo <- rbind(df_grupo, df_temp)
+  }
+  return(df_grupo)
+}
+
+# Procesar archivos en grupos de 5
+for (i in seq(1, length(archivos_csv), by = 4)) {
+  grupo_actual <- archivos_csv[i:min(i+4, length(archivos_csv))]
+  df_grupo <- procesar_grupo(grupo_actual)
+  
+  p <- ggplot() +
+    geom_line(data = df_grupo, aes(x = x, y = y, color = archivo), linewidth = 0.5, alpha = 0.7) +
+    geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.5) +
+    labs(
+      x = "Distancia recorrida (m)",
+      y = "Velocidad (m/s)",
+      title = paste("Relación entre Distancia y Velocidad - Grupo", ceiling(i/5))
+    ) +
+    scale_x_continuous(limits = c(0, max(df_grupo$x))) +
+    scale_y_continuous(limits = c(0, max(df_grupo$y))) +
+    theme_custom +
+    guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+    coord_cartesian(clip = "off")
+  
+  # Guardar el gráfico
+  ggsave(paste0("grafico_50_paradas_MOD", ceiling(i/5), ".png"), plot = p, width = 12, height = 8, dpi = 300)
+  
+  # Mostrar el gráfico (opcional, comentar si no se desea ver en pantalla)
+  print(p)
+}
+
+```
+
+
+```{r}
+directorio <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16"
+archivos_csv <- list.files(directorio, pattern = "\\.csv$", full.names = TRUE)
+
+# Modificamos el tema personalizado
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+# Inicializamos un dataframe vacío para almacenar todos los datos
+df_all <- data.frame()
+for (archivo in archivos_csv) {
+  df <- read.csv(archivo)
+  df$Distance <- replace(df$Distance, is.na(df$Distance), 0)
+  df$dist_acum <- cumsum(df$Distance)
+  dist_acum <- df$dist_acum
+  velocidad <- df$Speed.m.s.
+  
+  # Agregamos una columna para identificar el archivo
+  df_temp <- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+  
+  # Concatenamos los datos al dataframe principal
+  df_all <- rbind(df_all, df_temp)
+}
+
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+
+# Creamos el gráfico con las modificaciones
+p <- ggplot() +
+  geom_line(data = df_all, aes(x = x, y = y, color = archivo), linewidth = 0.5, alpha = 0.7) +
+  geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.5) +
+  labs(
+    x = "Distancia recorrida (m)",
+    y = "Velocidad (m/s)",
+    title = "Relación entre Distancia y Velocidad para múltiples archivos"
+  ) +
+  scale_x_continuous(limits = c(0, max(df_all$x))) +
+  scale_y_continuous(limits = c(0, max(df_all$y))) +
+  theme_custom +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+  coord_cartesian(clip = "off")
+
+# Guardar el gráfico como un archivo de alta resolución
+ggsave("grafico_50_paradas.png", plot = p, width = 12, height = 8, dpi = 300)
+
+# Mostrar el gráfico
+print(p)
+```
+```{r}
+library(ggplot2)
+library(dplyr)
+
+directorio <- "C:/Users/melco/OneDrive/Escritorio/pasantia_imple/datos_restados_16"
+archivos_csv <- list.files(directorio, pattern = "\\.csv$", full.names = TRUE)
+
+theme_custom <- theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    axis.title = element_text(face = "bold", size = 10),
+    axis.text = element_text(size = 8),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 6),
+    legend.key.size = unit(0.5, "cm")
+  )
+
+# Vector de paradas
+paradas <- c(869.434,1533.228,2430.901,3169.766,3947.629,4690.218,5514.84,6051.184,6693.546,7264.281,8095.383,8530.091,9088.648,9600.03,10486.354,11616.937,12249.156,12605.908,14312.13,15063.13,16036.058,16509.946,17643.719,18142.476,18511.465,19328.821,19802.709,20775.637,21526.637,23232.859,23589.611,24221.83,25352.413,26238.737,26750.119,27308.676,27743.384,28574.486,29145.221,29787.583,30323.927,31148.549,31891.138,32669,33407.865,34305.539,34969.332,35838.766)
+
+# Creamos un data frame para las paradas
+df_paradas <- data.frame(x = paradas, y = rep(0, length(paradas)))
+
+# Función para procesar un grupo de archivos
+procesar_grupo <- function(grupo_archivos) {
+  df_grupo <- data.frame()
+  for (archivo in grupo_archivos) {
+    df <- read.csv(archivo)
+    df$Distance <- replace(df$Distance, is.na(df$Distance), 0)
+    df$dist_acum <- cumsum(df$Distance)
+    dist_acum <- df$dist_acum
+    velocidad <- df$Speed.m.s.
+    
+    df_temp <- data.frame(x = dist_acum, y = velocidad, archivo = basename(archivo))
+    df_grupo <- rbind(df_grupo, df_temp)
+  }
+  return(df_grupo)
+}
+
+# Procesar archivos en grupos de 5
+for (i in seq(1, length(archivos_csv), by = 4)) {
+  grupo_actual <- archivos_csv[i:min(i+4, length(archivos_csv))]
+  df_grupo <- procesar_grupo(grupo_actual)
+  
+  p <- ggplot() +
+    geom_line(data = df_grupo, aes(x = x, y = y, color = archivo), linewidth = 0.5, alpha = 0.7) +
+    geom_point(data = df_paradas, aes(x = x, y = y), color = "red", size = 0.5) +
+    labs(
+      x = "Distancia recorrida (m)",
+      y = "Velocidad (m/s)",
+      title = paste("Relación entre Distancia y Velocidad - Grupo", ceiling(i/5))
+    ) +
+    scale_x_continuous(limits = c(0, max(df_grupo$x))) +
+    scale_y_continuous(limits = c(0, max(df_grupo$y))) +
+    theme_custom +
+    guides(color = guide_legend(nrow = 2, byrow = TRUE, override.aes = list(size = 2))) +
+    coord_cartesian(clip = "off")
+  
+  # Guardar el gráfico
+  ggsave(paste0("grafico_50_paradas", ceiling(i/5), ".png"), plot = p, width = 12, height = 8, dpi = 300)
+  
+  # Mostrar el gráfico (opcional, comentar si no se desea ver en pantalla)
+  print(p)
+}
+```
+
+
+
+
+
